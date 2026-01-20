@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SecureShare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">🔐 SecureShare</div>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <div>
+                    <h1>👤 User Profile</h1>
+                    <p>Manage your account settings</p>
+                </div>
+                <div>
+                    <a href="{{ url_for('dashboard') }}" class="btn-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="upload-section">
+                    <h2>📋 Account Information</h2>
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 1.5rem; border-radius: 10px;">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" value="{{ user.username }}" readonly style="background: white;">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" value="{{ user.email }}" readonly style="background: white;">
+                        </div>
+                        <div class="form-group">
+                            <label>Member Since</label>
+                            <input type="text" value="{{ user.created_at.strftime('%Y-%m-%d') }}" readonly style="background: white;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <h2>📊 Usage Statistics</h2>
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 1.5rem; border-radius: 10px;">
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Total Files Uploaded:</strong> {{ user.files|length }}
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Total Downloads:</strong> 
+                            {% set total_downloads = user.files|sum(attribute='download_count') %}
+                            {{ total_downloads }}
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Active Files:</strong>
+                            {% set active_files = 0 %}
+                            {% for file in user.files %}
+                                {% if not file.expiry_date or file.expiry_date > now %}
+                                    {% set active_files = active_files + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ active_files }}
+                        </div>
+                        <div>
+                            <strong>Account Type:</strong> <span style="color: #667eea;">Free</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="upload-section" style="margin-top: 2rem;">
+                <h2>🔒 Security Tips</h2>
+                <div style="background: rgba(76, 175, 80, 0.1); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #4CAF50;">
+                    <ul style="margin: 0; padding-left: 1.5rem; color: #333;">
+                        <li style="margin-bottom: 0.5rem;">Use strong, unique passwords for each file you upload</li>
+                        <li style="margin-bottom: 0.5rem;">Share download links only with trusted recipients</li>
+                        <li style="margin-bottom: 0.5rem;">Set appropriate expiry dates for sensitive files</li>
+                        <li style="margin-bottom: 0.5rem;">Regularly delete files you no longer need to share</li>
+                        <li>Enable two-factor authentication for additional account security</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

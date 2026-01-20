@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Secure File - SecureShare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="download-container">
+        <div class="container">
+            <div class="download-card">
+                {% if error %}
+                    <div class="file-icon">❌</div>
+                    <h2>File Not Available</h2>
+                    <p>This file may have expired, reached its download limit, or the link is invalid.</p>
+                    <a href="{{ url_for('index') }}" class="btn-primary">Return to Home</a>
+                {% else %}
+                    <div class="file-icon">🔐</div>
+                    <h2>Secure File Download</h2>
+                    <p>You're about to download a securely encrypted file:</p>
+                    
+                    {% if filename %}
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
+                            <strong>{{ filename }}</strong>
+                        </div>
+                    {% endif %}
+                    
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <form method="POST">
+                        <div class="form-group">
+                            <label for="password">Enter File Password</label>
+                            <input type="password" id="password" name="password" required placeholder="Enter the password to decrypt this file">
+                        </div>
+                        <button type="submit" class="btn-auth">🔓 Download & Decrypt</button>
+                    </form>
+                    
+                    <p style="margin-top: 2rem; color: #666; font-size: 0.9rem;">
+                        This file is encrypted with AES-256 encryption. 
+                        The correct password is required to decrypt and download the file.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
